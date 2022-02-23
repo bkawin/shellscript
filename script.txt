@@ -1,0 +1,33 @@
+#!/bin/bash
+TODAY=$(date)
+ACOUNT=$(gcloud auth list --format='value(ACCOUNT)')
+echo "welcome to GCP"
+echo "----------------------------------------------------"
+echo "Date: $TODAY                     ACCOUNT:$ACCOUNT"
+echo "-----------------------------------------------------"
+read -p "Please enter your Organization number : " val
+echo "... Please wait ...processing..."
+echo "getting the cloud storage bucket list on each project of your Organization"
+echo " "
+echo " "
+gcloud asset search-all-resources --scope organizations/$val --asset-types='storage.googleapis.com/Bucket' --order-by='createTime' --format 'csv(displayName,projectparentAssetType,parentFullResourceName)' > bucket_project_details.csv
+echo " "
+echo " "
+echo " "
+echo "bucket list with project names ready --->  bucket_project_details.csv"
+gcloud asset search-all-resources --scope organizations/$val --asset-types='storage.googleapis.com/Bucket' --order-by='createTime' --format 'value(displayName)' > buckets.txt
+echo "only bucket names --->  buckets.txt"
+echo " "
+echo " "
+echo " "
+echo "Grabbing the size of each bucket.. please wait"
+echo " "
+echo " "
+echo " "
+cp -p "bucketsize.txt" "bucketsize.old.`date +%Y-%m-%d`.txt" ;
+rm -f bucketsize.txt > /dev/null
+echo "Date: $TODAY          ACCOUNT:$ACCOUNT" > bucketsize.txt
+#for i in $(cat buckets.txt) ; do gsutil du -sh gs://"$i" >> bucketsize.txt; done
+echo "Bucket size ready ---> kindly check  bucketsize.txt file, Thankyou !"
+
+
